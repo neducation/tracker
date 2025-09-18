@@ -3,13 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Phone Hub — Prefilled</title>
+    <title>📱 Universal Phone Hub - Kitchen Display</title>
     <style>
       :root {
-        --bg: #0b0f14;
-        --fg: #e7f0ff;
-        --muted: #93a4bd;
-        --accent: #5df2ff;
+        --bg: #000000;
+        --bg-card: #0a0f15;
+        --bg-input: #0d1522;
+        --fg: #ffffff;
+        --muted: #8a9bb3;
+        --accent: #00d4ff;
+        --border: #1a2332;
+        --border-hover: #2c4367;
       }
       body {
         margin: 0;
@@ -22,7 +26,42 @@
         border-bottom: 1px solid #1a2330;
         display: flex;
         align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
         gap: 10px;
+      }
+      .opacity-control {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .opacity-slider {
+        width: 120px;
+        height: 4px;
+        background: #1a2330;
+        border-radius: 2px;
+        outline: none;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+      .opacity-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--accent);
+        cursor: pointer;
+      }
+      .opacity-slider::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--accent);
+        cursor: pointer;
+        border: none;
       }
       h1 {
         font-size: 18px;
@@ -31,16 +70,38 @@
       }
       .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 12px;
-        padding: 16px;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+        padding: 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      @media (max-width: 768px) {
+        .grid {
+          grid-template-columns: 1fr;
+          padding: 12px;
+        }
+        .opacity-control {
+          flex-direction: column;
+          gap: 5px;
+        }
+        .opacity-slider {
+          width: 100px;
+        }
+      }
+
+      @media (min-width: 1200px) {
+        .grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
       }
       .card {
-        background: #101825;
-        border: 1px solid #1a2330;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
         border-radius: 16px;
         padding: 14px;
-        box-shadow: 0 0 0 1px #0b111b inset;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3) inset;
       }
       .card h2 {
         margin: 0 0 10px;
@@ -52,23 +113,47 @@
       .btn {
         display: inline-block;
         width: 100%;
-        padding: 12px 14px;
-        margin: 6px 0;
+        padding: 16px 18px;
+        margin: 8px 0;
         text-decoration: none;
         text-align: center;
         border-radius: 12px;
-        border: 1px solid #213049;
-        background: #0f1a2a;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
         color: var(--fg);
         cursor: pointer;
+        transition: border-color 0.2s ease, background-color 0.2s ease;
+        font-size: 14px;
+        font-weight: 500;
+        touch-action: manipulation;
+        user-select: none;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
-      .btn:hover {
-        border-color: #2c4367;
+      .btn:hover,
+      .btn:focus {
+        border-color: var(--border-hover);
+        background: #121b26;
+        outline: none;
+      }
+      .btn:active {
+        transform: scale(0.98);
+        background: #0a1219;
       }
       .btn.accent {
-        border-color: transparent;
-        background: linear-gradient(90deg, #0a1b2b, #0b2539);
-        box-shadow: 0 0 16px rgba(93, 242, 255, 0.15);
+        border-color: var(--accent);
+        background: linear-gradient(135deg, #0a1b2b, #0b2539);
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .btn.accent:hover,
+      .btn.accent:focus {
+        box-shadow: 0 0 25px rgba(0, 212, 255, 0.3);
+        border-color: #00c4ef;
+        transform: translateY(-1px);
       }
       .row {
         display: flex;
@@ -81,10 +166,18 @@
       input[type="datetime-local"] {
         width: 100%;
         padding: 10px 12px;
-        background: #0d1522;
-        border: 1px solid #1a2330;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
         border-radius: 10px;
         color: var(--fg);
+      }
+      input[type="text"]:focus,
+      input[type="tel"]:focus,
+      input[type="email"]:focus,
+      input[type="url"]:focus,
+      input[type="datetime-local"]:focus {
+        outline: none;
+        border-color: var(--accent);
       }
       video {
         width: 100%;
@@ -104,7 +197,21 @@
     </style>
   </head>
   <body>
-    <header><h1>📱 Phone Hub — Android & iOS</h1></header>
+    <header>
+      <h1>📱 Universal Phone Hub - Kitchen Display</h1>
+      <div class="opacity-control">
+        <span>Button Opacity:</span>
+        <input
+          type="range"
+          class="opacity-slider"
+          id="opacitySlider"
+          min="10"
+          max="100"
+          value="100"
+        />
+        <span id="opacityValue">100%</span>
+      </div>
+    </header>
 
     <div class="grid">
       <!-- Communications (prefilled) -->
@@ -208,21 +315,104 @@
         >
       </div>
 
+      <!-- Device Utilities -->
+      <div class="card">
+        <h2>Device Utilities</h2>
+        <button class="btn accent" onclick="openBrowser()">
+          🌐 Open Browser
+        </button>
+        <button class="btn" onclick="openPhotos()">📸 Open Photos App</button>
+        <button class="btn" onclick="openFileManager()">📁 File Manager</button>
+        <button class="btn" onclick="openSettings()">⚙️ Settings App</button>
+        <button class="btn" onclick="openCalculator()">🧮 Calculator</button>
+        <button class="btn" onclick="openNotes()">📝 Notes App</button>
+        <button class="btn" onclick="openClock()">⏰ Clock/Timer</button>
+        <button class="btn" onclick="openContacts()">👥 Contacts</button>
+        <small
+          >App shortcuts work best on mobile devices with the respective apps
+          installed.</small
+        >
+      </div>
+
+      <!-- Media & Hardware Controls -->
+      <div class="card">
+        <h2>Media & Hardware</h2>
+        <div class="row">
+          <button class="btn" onclick="volumeUp()">🔊 Volume Up</button>
+          <button class="btn" onclick="volumeDown()">🔉 Volume Down</button>
+        </div>
+        <button class="btn" onclick="getBatteryInfo()">🔋 Battery Info</button>
+        <button class="btn" onclick="getNetworkInfo()">📶 Network Info</button>
+        <button class="btn" onclick="getDeviceInfo()">📱 Device Info</button>
+        <button class="btn" onclick="orientationInfo()">
+          📐 Orientation Info
+        </button>
+        <button class="btn" onclick="lockOrientation('portrait')">
+          📱 Lock Portrait
+        </button>
+        <button class="btn" onclick="lockOrientation('landscape')">
+          📱 Lock Landscape
+        </button>
+        <button class="btn" onclick="unlockOrientation()">
+          🔄 Unlock Orientation
+        </button>
+        <div
+          id="deviceInfoDisplay"
+          style="
+            margin-top: 10px;
+            padding: 10px;
+            background: var(--bg-input);
+            border-radius: 8px;
+            font-size: 12px;
+            display: none;
+          "
+        ></div>
+        <small
+          >Hardware controls depend on browser and device capabilities.</small
+        >
+      </div>
+
+      <!-- Web Utilities & Shortcuts -->
+      <div class="card">
+        <h2>Web Utilities</h2>
+        <div class="row">
+          <input id="qrText" type="text" placeholder="Text for QR code" />
+          <button class="btn" onclick="generateQR()">📱 Generate QR</button>
+        </div>
+        <button class="btn" onclick="scanQR()">📷 Scan QR Code</button>
+        <div class="row">
+          <input id="longUrl" type="url" placeholder="URL to shorten" />
+          <button class="btn" onclick="shortenUrl()">🔗 Shorten URL</button>
+        </div>
+        <button class="btn" onclick="takeScreenshot()">📸 Screenshot</button>
+        <button class="btn" onclick="downloadManager()">📥 Downloads</button>
+        <button class="btn" onclick="openDevTools()">🔧 Dev Tools</button>
+        <button class="btn" onclick="viewSource()">📄 View Source</button>
+        <div
+          id="qrDisplay"
+          style="margin-top: 10px; text-align: center; display: none"
+        ></div>
+        <small
+          >Some features may require permissions or specific browser
+          support.</small
+        >
+      </div>
+
       <!-- Share / Utilities -->
       <div class="card">
         <h2>Share & Utilities</h2>
-        <button class="btn" onclick="share()">Native Share</button>
+        <button class="btn" onclick="share()">📤 Native Share</button>
         <div class="row">
           <input id="clip" type="text" placeholder="Text to copy" />
-          <button class="btn" onclick="copyText()">Copy</button>
+          <button class="btn" onclick="copyText()">📋 Copy</button>
         </div>
-        <button class="btn" onclick="vibrate()">Vibrate (Android)</button>
-        <button class="btn" onclick="wakeLock()">Keep Screen Awake</button>
+        <button class="btn" onclick="vibrate()">📳 Vibrate (Android)</button>
+        <button class="btn" onclick="wakeLock()">☀️ Keep Screen Awake</button>
         <button class="btn" onclick="releaseWakeLock()">
-          Release Wake Lock
+          🌙 Release Wake Lock
         </button>
-        <button class="btn" onclick="goFullscreen()">Fullscreen</button>
-        <button class="btn" onclick="window.print()">Print</button>
+        <button class="btn" onclick="goFullscreen()">🔳 Fullscreen</button>
+        <button class="btn" onclick="window.print()">🖨️ Print</button>
       </div>
 
       <!-- Calendar -->
@@ -236,18 +426,63 @@
 
       <!-- Admin (Kiosk) -->
       <div class="card">
-        <h2>Admin Tools</h2>
-        <button class="btn" onclick="location.reload()">Refresh Page</button>
-        <button
-          class="btn"
-          onclick="localStorage.clear(); sessionStorage.clear(); alert('Storage cleared')"
-        >
-          Clear Storage
-        </button>
+        <h2>🔒 Admin Tools</h2>
         <div class="row">
-          <input id="navUrl" type="url" placeholder="https://example.com" />
-          <button class="btn" onclick="navigateTo()">Open URL</button>
+          <input id="adminPass" type="password" placeholder="Admin password" />
+          <button class="btn" onclick="adminLogin()">🔓 Login</button>
         </div>
+        <div id="adminPanel" style="display: none">
+          <button class="btn accent" onclick="location.reload()">
+            🔄 Refresh Page
+          </button>
+          <button class="btn" onclick="clearAllData()">
+            🗑️ Clear All Data
+          </button>
+          <button class="btn" onclick="exportSettings()">
+            📤 Export Settings
+          </button>
+          <button class="btn" onclick="importSettings()">
+            📥 Import Settings
+          </button>
+          <button class="btn" onclick="kioskMode()">🖥️ Kiosk Mode</button>
+          <button class="btn" onclick="remoteControl()">
+            📡 Remote Control
+          </button>
+          <button class="btn" onclick="systemMonitor()">
+            📊 System Monitor
+          </button>
+          <div class="row">
+            <input id="navUrl" type="url" placeholder="https://example.com" />
+            <button class="btn" onclick="navigateTo()">🌐 Navigate</button>
+          </div>
+          <div class="row">
+            <input
+              id="autoRefresh"
+              type="number"
+              placeholder="Minutes"
+              min="1"
+              max="1440"
+            />
+            <button class="btn" onclick="setAutoRefresh()">
+              ⏱️ Auto Refresh
+            </button>
+          </div>
+          <button class="btn" onclick="emergencyReset()">
+            🚨 Emergency Reset
+          </button>
+        </div>
+        <div
+          id="monitorDisplay"
+          style="
+            margin-top: 10px;
+            padding: 10px;
+            background: var(--bg-input);
+            border-radius: 8px;
+            font-size: 12px;
+            display: none;
+          "
+        ></div>
+        <small>Admin features require password: "admin123"</small>
       </div>
     </div>
 
@@ -262,6 +497,30 @@
       const isIOS =
         /iPad|iPhone|iPod/.test(navigator.userAgent) ||
         (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+      // Opacity Control
+      const opacitySlider = document.getElementById("opacitySlider");
+      const opacityValue = document.getElementById("opacityValue");
+
+      function updateButtonOpacity() {
+        const opacity = opacitySlider.value / 100;
+        opacityValue.textContent = opacitySlider.value + "%";
+        const buttons = document.querySelectorAll(".btn");
+        buttons.forEach((btn) => {
+          btn.style.opacity = opacity;
+        });
+        // Save preference
+        localStorage.setItem("buttonOpacity", opacitySlider.value);
+      }
+
+      // Load saved opacity preference
+      const savedOpacity = localStorage.getItem("buttonOpacity") || "100";
+      opacitySlider.value = savedOpacity;
+
+      opacitySlider.addEventListener("input", updateButtonOpacity);
+
+      // Initialize opacity on page load
+      document.addEventListener("DOMContentLoaded", updateButtonOpacity);
 
       function dial() {
         const v = (
@@ -430,6 +689,624 @@
       function navigateTo() {
         const u = document.getElementById("navUrl").value.trim();
         if (u) location.href = u;
+      }
+
+      // Device Utility Functions
+      function openBrowser() {
+        // Try different browser apps
+        const browserUrls = [
+          "googlechrome://",
+          "firefox://",
+          "safari://",
+          "microsoft-edge://",
+          "https://www.google.com",
+        ];
+
+        // Try app schemes first, fallback to web
+        for (let url of browserUrls) {
+          try {
+            window.open(url, "_blank");
+            break;
+          } catch (e) {
+            continue;
+          }
+        }
+      }
+
+      function openPhotos() {
+        // Try platform-specific photo apps
+        if (isIOS) {
+          location.href = "photos-redirect://";
+        } else {
+          // Android
+          const intent =
+            "intent://gallery#Intent;scheme=content;type=image/*;package=com.google.android.apps.photos;end";
+          try {
+            location.href = intent;
+          } catch (e) {
+            // Fallback to generic gallery
+            location.href = "content://media/external/images/media";
+          }
+        }
+      }
+
+      function openFileManager() {
+        if (isIOS) {
+          location.href = "shareddocuments://";
+        } else {
+          // Android file manager intents
+          const fileIntents = [
+            "intent://files#Intent;package=com.google.android.documentsui;end",
+            "intent://files#Intent;package=com.android.documentsui;end",
+            "content://com.android.externalstorage.documents/",
+          ];
+
+          for (let intent of fileIntents) {
+            try {
+              location.href = intent;
+              break;
+            } catch (e) {
+              continue;
+            }
+          }
+        }
+      }
+
+      function openSettings() {
+        if (isIOS) {
+          location.href = "App-Prefs://";
+        } else {
+          // Android settings
+          location.href =
+            "intent://settings#Intent;action=android.settings.SETTINGS;end";
+        }
+      }
+
+      function openCalculator() {
+        const calcUrls = isIOS
+          ? ["calc://"]
+          : [
+              "intent://calculator#Intent;package=com.google.android.calculator;end",
+            ];
+
+        for (let url of calcUrls) {
+          try {
+            location.href = url;
+            break;
+          } catch (e) {
+            continue;
+          }
+        }
+      }
+
+      function openNotes() {
+        if (isIOS) {
+          location.href = "mobilenotes://";
+        } else {
+          location.href =
+            "intent://notes#Intent;package=com.google.android.keep;end";
+        }
+      }
+
+      function openClock() {
+        if (isIOS) {
+          location.href = "clock-worldclock://";
+        } else {
+          location.href =
+            "intent://clock#Intent;package=com.google.android.deskclock;end";
+        }
+      }
+
+      function openContacts() {
+        if (isIOS) {
+          location.href = "contacts://";
+        } else {
+          location.href =
+            "intent://contacts#Intent;package=com.google.android.contacts;end";
+        }
+      }
+
+      // Media & Hardware Control Functions
+      function volumeUp() {
+        // Web browsers can't directly control system volume
+        // But we can provide media session controls
+        if ("mediaSession" in navigator) {
+          navigator.mediaSession.setActionHandler("volumeup", () => {
+            alert("Volume up pressed - handled by system");
+          });
+        }
+        alert(
+          "Volume control requires system-level permissions not available in web browsers."
+        );
+      }
+
+      function volumeDown() {
+        if ("mediaSession" in navigator) {
+          navigator.mediaSession.setActionHandler("volumedown", () => {
+            alert("Volume down pressed - handled by system");
+          });
+        }
+        alert(
+          "Volume control requires system-level permissions not available in web browsers."
+        );
+      }
+
+      async function getBatteryInfo() {
+        const display = document.getElementById("deviceInfoDisplay");
+        display.style.display = "block";
+
+        try {
+          if ("getBattery" in navigator) {
+            const battery = await navigator.getBattery();
+            display.innerHTML = `
+              <strong>🔋 Battery Info:</strong><br>
+              Level: ${Math.round(battery.level * 100)}%<br>
+              Charging: ${battery.charging ? "Yes" : "No"}<br>
+              Charging Time: ${
+                battery.chargingTime === Infinity
+                  ? "Unknown"
+                  : Math.round(battery.chargingTime / 60) + " min"
+              }<br>
+              Discharging Time: ${
+                battery.dischargingTime === Infinity
+                  ? "Unknown"
+                  : Math.round(battery.dischargingTime / 60) + " min"
+              }
+            `;
+          } else {
+            display.innerHTML =
+              "<strong>🔋 Battery API not supported on this device/browser</strong>";
+          }
+        } catch (e) {
+          display.innerHTML =
+            "<strong>🔋 Battery info unavailable: " + e.message + "</strong>";
+        }
+      }
+
+      function getNetworkInfo() {
+        const display = document.getElementById("deviceInfoDisplay");
+        display.style.display = "block";
+
+        let info = "<strong>📶 Network Info:</strong><br>";
+        info += `Online: ${navigator.onLine ? "Yes" : "No"}<br>`;
+
+        if ("connection" in navigator) {
+          const conn = navigator.connection;
+          info += `Type: ${conn.effectiveType || "Unknown"}<br>`;
+          info += `Downlink: ${conn.downlink || "Unknown"} Mbps<br>`;
+          info += `RTT: ${conn.rtt || "Unknown"} ms<br>`;
+          info += `Save Data: ${conn.saveData ? "Enabled" : "Disabled"}`;
+        } else {
+          info += "Detailed network info not available";
+        }
+
+        display.innerHTML = info;
+      }
+
+      function getDeviceInfo() {
+        const display = document.getElementById("deviceInfoDisplay");
+        display.style.display = "block";
+
+        let info = "<strong>📱 Device Info:</strong><br>";
+        info += `User Agent: ${navigator.userAgent.substring(0, 50)}...<br>`;
+        info += `Platform: ${navigator.platform}<br>`;
+        info += `Language: ${navigator.language}<br>`;
+        info += `Screen: ${screen.width}x${screen.height}<br>`;
+        info += `Viewport: ${window.innerWidth}x${window.innerHeight}<br>`;
+        info += `Device Pixel Ratio: ${window.devicePixelRatio}<br>`;
+        info += `Touch Support: ${"ontouchstart" in window ? "Yes" : "No"}<br>`;
+        info += `Geolocation: ${
+          "geolocation" in navigator ? "Available" : "Not Available"
+        }`;
+
+        display.innerHTML = info;
+      }
+
+      function orientationInfo() {
+        const display = document.getElementById("deviceInfoDisplay");
+        display.style.display = "block";
+
+        let info = "<strong>📐 Orientation Info:</strong><br>";
+
+        if (screen.orientation) {
+          info += `Orientation: ${screen.orientation.type}<br>`;
+          info += `Angle: ${screen.orientation.angle}°`;
+        } else if (window.orientation !== undefined) {
+          info += `Angle: ${window.orientation}°<br>`;
+          let type =
+            Math.abs(window.orientation) === 90 ? "landscape" : "portrait";
+          info += `Type: ${type}`;
+        } else {
+          info += "Orientation info not available";
+        }
+
+        display.innerHTML = info;
+      }
+
+      async function lockOrientation(orientation) {
+        try {
+          if (screen.orientation && screen.orientation.lock) {
+            await screen.orientation.lock(orientation);
+            alert(`Screen locked to ${orientation}`);
+          } else {
+            alert("Screen orientation lock not supported");
+          }
+        } catch (e) {
+          alert("Orientation lock failed: " + e.message);
+        }
+      }
+
+      function unlockOrientation() {
+        try {
+          if (screen.orientation && screen.orientation.unlock) {
+            screen.orientation.unlock();
+            alert("Screen orientation unlocked");
+          } else {
+            alert("Screen orientation unlock not supported");
+          }
+        } catch (e) {
+          alert("Orientation unlock failed: " + e.message);
+        }
+      }
+
+      // Web Utilities Functions
+      function generateQR() {
+        const text =
+          document.getElementById("qrText").value || "Hello from Phone Hub!";
+        const qrDisplay = document.getElementById("qrDisplay");
+
+        // Using QR Server API to generate QR code
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
+          text
+        )}`;
+
+        qrDisplay.innerHTML = `
+          <img src="${qrUrl}" alt="QR Code" style="max-width: 200px; border: 1px solid var(--border); border-radius: 8px;">
+          <br><small>QR Code for: ${text}</small>
+        `;
+        qrDisplay.style.display = "block";
+      }
+
+      async function scanQR() {
+        try {
+          if ("BarcodeDetector" in window) {
+            const stream = await navigator.mediaDevices.getUserMedia({
+              video: { facingMode: "environment" },
+            });
+
+            const video = document.createElement("video");
+            video.srcObject = stream;
+            video.play();
+
+            const barcodeDetector = new BarcodeDetector({
+              formats: ["qr_code"],
+            });
+
+            const detect = async () => {
+              const barcodes = await barcodeDetector.detect(video);
+              if (barcodes.length > 0) {
+                alert("QR Code detected: " + barcodes[0].rawValue);
+                stream.getTracks().forEach((track) => track.stop());
+              } else {
+                requestAnimationFrame(detect);
+              }
+            };
+
+            video.addEventListener("loadedmetadata", detect);
+          } else {
+            alert(
+              "QR Code scanning not supported in this browser. Try using your camera app instead."
+            );
+          }
+        } catch (e) {
+          alert("Camera access denied or not available: " + e.message);
+        }
+      }
+
+      function shortenUrl() {
+        const url = document.getElementById("longUrl").value;
+        if (!url) {
+          alert("Please enter a URL to shorten");
+          return;
+        }
+
+        // Using a simple URL shortener service (note: in production, use a proper service)
+        const shortUrl = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(
+          url
+        )}`;
+
+        fetch(shortUrl)
+          .then((response) => response.text())
+          .then((result) => {
+            if (result.startsWith("http")) {
+              document.getElementById("longUrl").value = result;
+              alert("URL shortened! Result copied to input field.");
+            } else {
+              alert("Error shortening URL: " + result);
+            }
+          })
+          .catch((e) => {
+            alert("Error shortening URL: " + e.message);
+          });
+      }
+
+      function takeScreenshot() {
+        if ("getDisplayMedia" in navigator.mediaDevices) {
+          navigator.mediaDevices
+            .getDisplayMedia({ video: true })
+            .then((stream) => {
+              const video = document.createElement("video");
+              video.srcObject = stream;
+              video.play();
+
+              video.addEventListener("loadedmetadata", () => {
+                const canvas = document.createElement("canvas");
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(video, 0, 0);
+
+                canvas.toBlob((blob) => {
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `screenshot-${Date.now()}.png`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                });
+
+                stream.getTracks().forEach((track) => track.stop());
+              });
+            })
+            .catch((e) => {
+              alert("Screenshot failed: " + e.message);
+            });
+        } else {
+          alert("Screen capture not supported in this browser");
+        }
+      }
+
+      function downloadManager() {
+        // Open browser's download page
+        const downloadUrls = [
+          "chrome://downloads/",
+          "about:downloads",
+          "edge://downloads/",
+          "firefox://downloads",
+        ];
+
+        for (let url of downloadUrls) {
+          try {
+            window.open(url, "_blank");
+            break;
+          } catch (e) {
+            continue;
+          }
+        }
+
+        alert(
+          "Attempting to open download manager. If nothing opens, check your browser's menu."
+        );
+      }
+
+      function openDevTools() {
+        // This won't actually work due to security restrictions
+        alert(
+          'Press F12 or right-click and select "Inspect Element" to open developer tools.'
+        );
+      }
+
+      function viewSource() {
+        window.open("view-source:" + location.href, "_blank");
+      }
+
+      // Enhanced Admin Functions
+      let autoRefreshInterval = null;
+
+      function adminLogin() {
+        const password = document.getElementById("adminPass").value;
+        if (password === "admin123") {
+          document.getElementById("adminPanel").style.display = "block";
+          document.getElementById("adminPass").value = "";
+          alert("Admin access granted!");
+          localStorage.setItem("adminLoggedIn", "true");
+        } else {
+          alert("Incorrect password");
+        }
+      }
+
+      // Check if admin is already logged in
+      if (localStorage.getItem("adminLoggedIn") === "true") {
+        document.addEventListener("DOMContentLoaded", () => {
+          document.getElementById("adminPanel").style.display = "block";
+        });
+      }
+
+      function clearAllData() {
+        if (
+          confirm("This will clear all data and refresh the page. Continue?")
+        ) {
+          localStorage.clear();
+          sessionStorage.clear();
+          if ("caches" in window) {
+            caches.keys().then((names) => {
+              names.forEach((name) => caches.delete(name));
+            });
+          }
+          location.reload();
+        }
+      }
+
+      function exportSettings() {
+        const settings = {
+          buttonOpacity: localStorage.getItem("buttonOpacity") || "100",
+          adminLoggedIn: localStorage.getItem("adminLoggedIn") || "false",
+          timestamp: new Date().toISOString(),
+          version: "1.0",
+        };
+
+        const blob = new Blob([JSON.stringify(settings, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `phonehub-settings-${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function importSettings() {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".json";
+        input.onchange = (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              try {
+                const settings = JSON.parse(e.target.result);
+                if (settings.buttonOpacity) {
+                  localStorage.setItem("buttonOpacity", settings.buttonOpacity);
+                  document.getElementById("opacitySlider").value =
+                    settings.buttonOpacity;
+                  updateButtonOpacity();
+                }
+                alert("Settings imported successfully!");
+              } catch (err) {
+                alert("Error importing settings: " + err.message);
+              }
+            };
+            reader.readAsText(file);
+          }
+        };
+        input.click();
+      }
+
+      function kioskMode() {
+        if (
+          confirm(
+            "Enable kiosk mode? This will hide browser UI and prevent navigation."
+          )
+        ) {
+          // Request fullscreen
+          goFullscreen();
+
+          // Prevent right-click context menu
+          document.addEventListener("contextmenu", (e) => e.preventDefault());
+
+          // Prevent certain keyboard shortcuts
+          document.addEventListener("keydown", (e) => {
+            if (
+              e.ctrlKey ||
+              e.altKey ||
+              e.metaKey ||
+              e.key === "F11" ||
+              e.key === "F12"
+            ) {
+              e.preventDefault();
+            }
+          });
+
+          // Hide cursor after inactivity
+          let hideTimeout;
+          const hideCursor = () => {
+            document.body.style.cursor = "none";
+          };
+          const showCursor = () => {
+            document.body.style.cursor = "default";
+            clearTimeout(hideTimeout);
+            hideTimeout = setTimeout(hideCursor, 5000);
+          };
+
+          document.addEventListener("mousemove", showCursor);
+          hideTimeout = setTimeout(hideCursor, 5000);
+
+          alert("Kiosk mode enabled. Refresh page to disable.");
+        }
+      }
+
+      function remoteControl() {
+        alert(
+          "Remote Control Feature:\\n\\nTo control this display remotely:\\n1. Text commands to: " +
+            TARGET_PHONE +
+            "\\n2. Email commands to: " +
+            TARGET_EMAIL +
+            "\\n\\nSupported commands:\\n- REFRESH: Reload page\\n- OPACITY [10-100]: Set button opacity\\n- URL [address]: Navigate to URL\\n- CLEAR: Clear all data"
+        );
+      }
+
+      function systemMonitor() {
+        const display = document.getElementById("monitorDisplay");
+        display.style.display = "block";
+
+        const updateMonitor = () => {
+          const memory = performance.memory || {};
+          const connection = navigator.connection || {};
+
+          let info = "<strong>📊 System Monitor:</strong><br>";
+          info += `Uptime: ${Math.round(performance.now() / 1000)} seconds<br>`;
+          info += `Memory Used: ${Math.round(
+            (memory.usedJSHeapSize || 0) / 1024 / 1024
+          )} MB<br>`;
+          info += `Memory Limit: ${Math.round(
+            (memory.jsHeapSizeLimit || 0) / 1024 / 1024
+          )} MB<br>`;
+          info += `Connection: ${connection.effectiveType || "Unknown"}<br>`;
+          info += `Battery: ${navigator.onLine ? "Online" : "Offline"}<br>`;
+          info += `Last Updated: ${new Date().toLocaleTimeString()}`;
+
+          display.innerHTML = info;
+        };
+
+        updateMonitor();
+        const monitorInterval = setInterval(updateMonitor, 5000);
+
+        // Stop monitoring after 30 seconds
+        setTimeout(() => {
+          clearInterval(monitorInterval);
+          display.innerHTML +=
+            "<br><small>Monitoring stopped. Click again to restart.</small>";
+        }, 30000);
+      }
+
+      function setAutoRefresh() {
+        const minutes = parseInt(document.getElementById("autoRefresh").value);
+        if (minutes && minutes > 0) {
+          if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+          }
+          autoRefreshInterval = setInterval(() => {
+            location.reload();
+          }, minutes * 60000);
+          alert(`Auto refresh set for every ${minutes} minute(s)`);
+        } else {
+          alert("Please enter a valid number of minutes");
+        }
+      }
+
+      function emergencyReset() {
+        if (
+          confirm(
+            "EMERGENCY RESET: This will clear everything and reload. Continue?"
+          )
+        ) {
+          // Clear all data
+          localStorage.clear();
+          sessionStorage.clear();
+
+          // Clear intervals
+          if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+
+          // Reset to default state
+          if (wakeLockSentinel) {
+            wakeLockSentinel.release();
+          }
+
+          // Reload page
+          location.reload();
+        }
       }
 
       function downloadICS() {
