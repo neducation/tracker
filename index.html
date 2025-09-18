@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Phone Hub — Prefilled</title>
+    <style>
+      :root {
+        --bg: #0b0f14;
+        --fg: #e7f0ff;
+        --muted: #93a4bd;
+        --accent: #5df2ff;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, Segoe UI, Roboto, Arial;
+        background: var(--bg);
+        color: var(--fg);
+      }
+      header {
+        padding: 16px 20px;
+        border-bottom: 1px solid #1a2330;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0;
+        letter-spacing: 0.5px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 12px;
+        padding: 16px;
+      }
+      .card {
+        background: #101825;
+        border: 1px solid #1a2330;
+        border-radius: 16px;
+        padding: 14px;
+        box-shadow: 0 0 0 1px #0b111b inset;
+      }
+      .card h2 {
+        margin: 0 0 10px;
+        font-size: 14px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+      }
+      .btn {
+        display: inline-block;
+        width: 100%;
+        padding: 12px 14px;
+        margin: 6px 0;
+        text-decoration: none;
+        text-align: center;
+        border-radius: 12px;
+        border: 1px solid #213049;
+        background: #0f1a2a;
+        color: var(--fg);
+        cursor: pointer;
+      }
+      .btn:hover {
+        border-color: #2c4367;
+      }
+      .btn.accent {
+        border-color: transparent;
+        background: linear-gradient(90deg, #0a1b2b, #0b2539);
+        box-shadow: 0 0 16px rgba(93, 242, 255, 0.15);
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+      }
+      input[type="text"],
+      input[type="tel"],
+      input[type="email"],
+      input[type="url"],
+      input[type="datetime-local"] {
+        width: 100%;
+        padding: 10px 12px;
+        background: #0d1522;
+        border: 1px solid #1a2330;
+        border-radius: 10px;
+        color: var(--fg);
+      }
+      video {
+        width: 100%;
+        border-radius: 12px;
+        background: black;
+      }
+      small {
+        color: #93a4bd;
+        display: block;
+        margin-top: 6px;
+      }
+      footer {
+        padding: 10px 16px;
+        font-size: 12px;
+        color: #93a4bd;
+      }
+    </style>
+  </head>
+  <body>
+    <header><h1>📱 Phone Hub — Android & iOS</h1></header>
+
+    <div class="grid">
+      <!-- Communications (prefilled) -->
+      <div class="card">
+        <h2>Communications (Prefilled)</h2>
+        <div class="row">
+          <input id="phone" type="tel" value="+13052095064" />
+          <button class="btn" onclick="dial()">Call</button>
+        </div>
+        <div class="row">
+          <input id="sms" type="tel" value="+13052095064" />
+          <button class="btn" onclick="textSms()">SMS</button>
+        </div>
+        <div class="row">
+          <input id="email" type="email" value="70sieves_bluff@icloud.com" />
+          <button class="btn" onclick="mail()">Email</button>
+        </div>
+
+        <!-- One-tap quick actions -->
+        <a class="btn accent" href="tel:+13052095064"
+          >📞 Call +1 305-209-5064</a
+        >
+        <a class="btn" href="sms:+13052095064">💬 SMS +1 305-209-5064</a>
+        <a class="btn" href="mailto:70sieves_bluff@icloud.com?subject=Hello"
+          >✉️ Email 70sieves_bluff@icloud.com</a
+        >
+        <a
+          class="btn"
+          href="https://wa.me/13052095064?text=Hello"
+          target="_blank"
+          rel="noopener"
+          >🟢 WhatsApp +1 305-209-5064</a
+        >
+        <!-- Optional FaceTime (iOS) -->
+        <a class="btn" href="facetime://+13052095064">🎥 FaceTime (iOS)</a>
+        <small
+          >App-specific links (FaceTime/WhatsApp) require the app and browser
+          support.</small
+        >
+      </div>
+
+      <!-- Maps -->
+      <div class="card">
+        <h2>Maps & Directions</h2>
+        <div class="row">
+          <input id="query" type="text" placeholder="Search (e.g., coffee)" />
+          <button class="btn" onclick="openMapsSearch()">Search</button>
+        </div>
+        <div class="row">
+          <input
+            id="dest"
+            type="text"
+            placeholder="Destination (address or lat,lng)"
+          />
+          <button class="btn" onclick="openDirections()">Directions</button>
+        </div>
+        <a class="btn" href="#" onclick="openMyLocation(event)"
+          >Open My Location</a
+        >
+      </div>
+
+      <!-- Camera / Upload -->
+      <div class="card">
+        <h2>Camera & Upload</h2>
+        <input
+          id="fileCam"
+          type="file"
+          accept="image/*"
+          capture
+          style="display: none"
+        />
+        <button
+          class="btn accent"
+          onclick="document.getElementById('fileCam').click()"
+        >
+          Open Camera (Capture)
+        </button>
+        <input
+          id="filePick"
+          type="file"
+          accept="image/*"
+          style="display: none"
+        />
+        <button
+          class="btn"
+          onclick="document.getElementById('filePick').click()"
+        >
+          Pick Photo / File
+        </button>
+        <button class="btn" onclick="startPreview()">
+          Live Camera Preview
+        </button>
+        <button class="btn" onclick="stopPreview()">Stop Preview</button>
+        <video id="preview" playsinline muted></video>
+        <button class="btn" onclick="toggleTorch()">
+          Try Flashlight (Android only)
+        </button>
+        <small
+          >Live preview requires HTTPS + user gesture. Torch works only on some
+          Android devices.</small
+        >
+      </div>
+
+      <!-- Share / Utilities -->
+      <div class="card">
+        <h2>Share & Utilities</h2>
+        <button class="btn" onclick="share()">Native Share</button>
+        <div class="row">
+          <input id="clip" type="text" placeholder="Text to copy" />
+          <button class="btn" onclick="copyText()">Copy</button>
+        </div>
+        <button class="btn" onclick="vibrate()">Vibrate (Android)</button>
+        <button class="btn" onclick="wakeLock()">Keep Screen Awake</button>
+        <button class="btn" onclick="releaseWakeLock()">
+          Release Wake Lock
+        </button>
+        <button class="btn" onclick="goFullscreen()">Fullscreen</button>
+        <button class="btn" onclick="window.print()">Print</button>
+      </div>
+
+      <!-- Calendar -->
+      <div class="card">
+        <h2>Calendar (ICS)</h2>
+        <input id="title" type="text" value="Quick Event" />
+        <input id="whenStart" type="datetime-local" />
+        <input id="whenEnd" type="datetime-local" />
+        <button class="btn" onclick="downloadICS()">Add to Calendar</button>
+      </div>
+
+      <!-- Admin (Kiosk) -->
+      <div class="card">
+        <h2>Admin Tools</h2>
+        <button class="btn" onclick="location.reload()">Refresh Page</button>
+        <button
+          class="btn"
+          onclick="localStorage.clear(); sessionStorage.clear(); alert('Storage cleared')"
+        >
+          Clear Storage
+        </button>
+        <div class="row">
+          <input id="navUrl" type="url" placeholder="https://example.com" />
+          <button class="btn" onclick="navigateTo()">Open URL</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Notes: mobile browsers can’t open Settings/Photos directly. Use the
+      camera/picker above.
+    </footer>
+
+    <script>
+      const TARGET_PHONE = "+13052095064";
+      const TARGET_EMAIL = "70sieves_bluff@icloud.com";
+      const isIOS =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+      function dial() {
+        const v = (
+          document.getElementById("phone").value || TARGET_PHONE
+        ).trim();
+        location.href = "tel:" + encodeURIComponent(v);
+      }
+      function textSms() {
+        const v = (document.getElementById("sms").value || TARGET_PHONE).trim();
+        location.href = "sms:" + encodeURIComponent(v);
+      }
+      function mail() {
+        const v = (
+          document.getElementById("email").value || TARGET_EMAIL
+        ).trim();
+        location.href = "mailto:" + encodeURIComponent(v);
+      }
+
+      function appleMapsUrl(q) {
+        return "maps://?q=" + encodeURIComponent(q);
+      }
+      function googleMapsSearch(q) {
+        return (
+          "https://www.google.com/maps/search/?api=1&query=" +
+          encodeURIComponent(q)
+        );
+      }
+      function googleMapsDir(dest) {
+        return (
+          "https://www.google.com/maps/dir/?api=1&destination=" +
+          encodeURIComponent(dest)
+        );
+      }
+
+      function openMapsSearch() {
+        const q = document.getElementById("query").value.trim() || "coffee";
+        location.href = isIOS ? appleMapsUrl(q) : googleMapsSearch(q);
+      }
+      function openDirections() {
+        const d = document.getElementById("dest").value.trim();
+        if (!d) return alert("Enter destination (address or lat,lng)");
+        location.href = googleMapsDir(d);
+      }
+      function openMyLocation(e) {
+        e.preventDefault();
+        if (!navigator.geolocation) {
+          alert("Geolocation not supported");
+          return;
+        }
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords;
+            location.href = googleMapsSearch(`${latitude},${longitude}`);
+          },
+          (err) => alert("Location error: " + err.message)
+        );
+      }
+
+      let stream, track;
+      async function startPreview() {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "environment" },
+            audio: false,
+          });
+          const vid = document.getElementById("preview");
+          vid.srcObject = stream;
+          vid.play();
+          track = stream.getVideoTracks()[0];
+        } catch (e) {
+          alert("Camera error: " + e.message);
+        }
+      }
+      function stopPreview() {
+        const vid = document.getElementById("preview");
+        if (stream) {
+          stream.getTracks().forEach((t) => t.stop());
+          stream = null;
+          track = null;
+        }
+        vid.pause();
+        vid.srcObject = null;
+      }
+
+      async function toggleTorch() {
+        try {
+          if (!track) {
+            await startPreview();
+          }
+          if (!track) return;
+          const capabilities = track.getCapabilities?.();
+          if (capabilities && "torch" in capabilities) {
+            const settings = track.getSettings?.() || {};
+            const on = !settings.torch;
+            await track.applyConstraints({ advanced: [{ torch: on }] });
+            alert("Torch " + (on ? "ON" : "OFF") + " (if supported)");
+          } else {
+            alert("Torch not supported on this device/browser");
+          }
+        } catch (e) {
+          alert("Torch error: " + e.message);
+        }
+      }
+
+      async function share() {
+        try {
+          if (navigator.share) {
+            await navigator.share({
+              title: "Phone Hub",
+              text: "Quick tools",
+              url: location.href,
+            });
+          } else {
+            alert("Web Share API not supported");
+          }
+        } catch (e) {}
+      }
+
+      async function copyText() {
+        const v = document.getElementById("clip").value;
+        try {
+          await navigator.clipboard.writeText(v);
+          alert("Copied");
+        } catch (e) {
+          alert("Clipboard not available: " + e.message);
+        }
+      }
+
+      let wakeLockSentinel = null;
+      async function wakeLock() {
+        try {
+          if ("wakeLock" in navigator) {
+            wakeLockSentinel = await navigator.wakeLock.request("screen");
+            wakeLockSentinel.addEventListener("release", () =>
+              console.log("Wake lock released")
+            );
+            alert("Screen will stay awake");
+          } else {
+            alert("Wake Lock not supported");
+          }
+        } catch (e) {
+          alert("Wake Lock error: " + e.message);
+        }
+      }
+      async function releaseWakeLock() {
+        try {
+          await wakeLockSentinel?.release();
+          wakeLockSentinel = null;
+          alert("Wake Lock released");
+        } catch (e) {}
+      }
+
+      function goFullscreen() {
+        const el = document.documentElement;
+        const req =
+          el.requestFullscreen ||
+          el.webkitRequestFullscreen ||
+          el.msRequestFullscreen;
+        if (req) req.call(el);
+      }
+      function vibrate() {
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        else alert("Vibrate not supported");
+      }
+
+      function navigateTo() {
+        const u = document.getElementById("navUrl").value.trim();
+        if (u) location.href = u;
+      }
+
+      function downloadICS() {
+        const title = (
+          document.getElementById("title").value || "Event"
+        ).replace(/\n/g, " ");
+        const s = document.getElementById("whenStart").value;
+        const e = document.getElementById("whenEnd").value;
+        if (!s || !e) return alert("Select start and end times");
+        const fmt = (d) =>
+          d.replace(/[-:]/g, "").replace(".000", "").replace("Z", "") + "Z";
+        const dtStart = new Date(s);
+        const dtEnd = new Date(e);
+        const ics = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//PhoneHub//EN
+BEGIN:VEVENT
+UID:${Date.now()}@phonehub
+DTSTAMP:${fmt(new Date().toISOString())}
+DTSTART:${fmt(dtStart.toISOString())}
+DTEND:${fmt(dtEnd.toISOString())}
+SUMMARY:${title}
+END:VEVENT
+END:VCALENDAR`;
+        const blob = new Blob([ics], { type: "text/calendar" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `${title}.ics`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+    </script>
+  </body>
+</html>
