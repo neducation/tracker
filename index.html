@@ -194,6 +194,39 @@
         font-size: 12px;
         color: #93a4bd;
       }
+
+      /* Live Search Results Styles */
+      .live-result {
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        margin: 6px 0;
+        cursor: pointer;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .live-result:hover {
+        background: #121b26;
+        border-color: var(--border-hover);
+      }
+      .live-result .result-icon {
+        font-size: 18px;
+        min-width: 24px;
+      }
+      .live-result .result-text {
+        flex: 1;
+        font-size: 14px;
+      }
+      .live-result .result-type {
+        font-size: 11px;
+        color: var(--muted);
+        background: var(--bg-card);
+        padding: 2px 6px;
+        border-radius: 4px;
+      }
     </style>
   </head>
   <body>
@@ -214,6 +247,28 @@
     </header>
 
     <div class="grid">
+      <!-- Live Search & Type Box -->
+      <div class="card">
+        <h2>🔤 Live Search & Type</h2>
+        <input
+          id="liveSearch"
+          type="text"
+          placeholder="Type anything... (google.com, phone numbers, etc.)"
+          autocomplete="off"
+          style="font-size: 16px; padding: 14px"
+        />
+        <div
+          id="liveResults"
+          style="margin-top: 10px; max-height: 200px; overflow-y: auto"
+        >
+          <!-- Live results will appear here -->
+        </div>
+        <small
+          >Start typing to see live suggestions. Click any result to open/use
+          it.</small
+        >
+      </div>
+
       <!-- Communications (prefilled) -->
       <div class="card">
         <h2>Communications (Prefilled)</h2>
@@ -521,6 +576,217 @@
 
       // Initialize opacity on page load
       document.addEventListener("DOMContentLoaded", updateButtonOpacity);
+
+      // Live Search Functionality
+      const liveSearchInput = document.getElementById("liveSearch");
+      const liveResultsDiv = document.getElementById("liveResults");
+
+      function createResultItem(icon, text, type, action) {
+        const result = document.createElement("div");
+        result.className = "live-result";
+        result.innerHTML = `
+          <span class="result-icon">${icon}</span>
+          <span class="result-text">${text}</span>
+          <span class="result-type">${type}</span>
+        `;
+        result.onclick = action;
+        return result;
+      }
+
+      function updateLiveResults() {
+        const query = liveSearchInput.value.trim().toLowerCase();
+        liveResultsDiv.innerHTML = "";
+
+        if (!query) {
+          liveResultsDiv.innerHTML =
+            '<div style="text-align: center; color: var(--muted); padding: 20px;">Start typing to see suggestions...</div>';
+          return;
+        }
+
+        const results = [];
+
+        // URL Detection
+        if (
+          query.includes(".") &&
+          (query.startsWith("http") || !query.includes(" "))
+        ) {
+          const url = query.startsWith("http") ? query : "https://" + query;
+          results.push(
+            createResultItem("🌐", `Open: ${url}`, "Website", () =>
+              window.open(url, "_blank")
+            )
+          );
+        }
+
+        // Email Detection
+        if (query.includes("@") || query.includes("email")) {
+          const email = query.includes("@") ? query : TARGET_EMAIL;
+          results.push(
+            createResultItem(
+              "✉️",
+              `Email: ${email}`,
+              "Email",
+              () => (window.location.href = `mailto:${email}`)
+            )
+          );
+        }
+
+        // Phone Number Detection
+        const phoneRegex = /[\d\s\-\(\)\+]{7,}/;
+        if (
+          phoneRegex.test(query) ||
+          query.includes("call") ||
+          query.includes("phone")
+        ) {
+          const phone = phoneRegex.test(query)
+            ? query.replace(/[^\d\+]/g, "")
+            : TARGET_PHONE;
+          results.push(
+            createResultItem(
+              "📞",
+              `Call: ${phone}`,
+              "Phone",
+              () => (window.location.href = `tel:${phone}`)
+            )
+          );
+          results.push(
+            createResultItem(
+              "💬",
+              `SMS: ${phone}`,
+              "SMS",
+              () => (window.location.href = `sms:${phone}`)
+            )
+          );
+        }
+
+        // Google Search
+        if (query.length > 2) {
+          results.push(
+            createResultItem("🔍", `Search Google: "${query}"`, "Search", () =>
+              window.open(
+                `https://www.google.com/search?q=${encodeURIComponent(query)}`,
+                "_blank"
+              )
+            )
+          );
+        }
+
+        // YouTube Search
+        if (
+          query.includes("video") ||
+          query.includes("youtube") ||
+          query.includes("watch")
+        ) {
+          results.push(
+            createResultItem("📺", `Search YouTube: "${query}"`, "Video", () =>
+              window.open(
+                `https://www.youtube.com/results?search_query=${encodeURIComponent(
+                  query
+                )}`,
+                "_blank"
+              )
+            )
+          );
+        }
+
+        // Maps/Directions
+        if (
+          query.includes("map") ||
+          query.includes("direction") ||
+          query.includes("navigate")
+        ) {
+          results.push(
+            createResultItem("🗺️", `Maps: "${query}"`, "Navigation", () =>
+              window.open(
+                `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                  query
+                )}`,
+                "_blank"
+              )
+            )
+          );
+        }
+
+        // Wikipedia
+        if (query.includes("wiki") || query.length > 3) {
+          results.push(
+            createResultItem("📚", `Wikipedia: "${query}"`, "Reference", () =>
+              window.open(
+                `https://en.wikipedia.org/wiki/${encodeURIComponent(query)}`,
+                "_blank"
+              )
+            )
+          );
+        }
+
+        // Shopping
+        if (
+          query.includes("buy") ||
+          query.includes("shop") ||
+          query.includes("amazon")
+        ) {
+          results.push(
+            createResultItem("🛒", `Shop: "${query}"`, "Shopping", () =>
+              window.open(
+                `https://www.amazon.com/s?k=${encodeURIComponent(query)}`,
+                "_blank"
+              )
+            )
+          );
+        }
+
+        // News
+        if (query.includes("news") || query.includes("breaking")) {
+          results.push(
+            createResultItem("📰", `News: "${query}"`, "News", () =>
+              window.open(
+                `https://news.google.com/search?q=${encodeURIComponent(query)}`,
+                "_blank"
+              )
+            )
+          );
+        }
+
+        // Copy to clipboard
+        results.push(
+          createResultItem("📋", `Copy: "${query}"`, "Clipboard", async () => {
+            try {
+              await navigator.clipboard.writeText(query);
+              alert("Copied to clipboard!");
+            } catch (e) {
+              alert("Copy failed: " + e.message);
+            }
+          })
+        );
+
+        // QR Code generation
+        if (query.length > 0) {
+          results.push(
+            createResultItem("📱", `Generate QR: "${query}"`, "QR Code", () => {
+              document.getElementById("qrText").value = query;
+              generateQR();
+              // Scroll to QR section
+              document
+                .getElementById("qrDisplay")
+                .scrollIntoView({ behavior: "smooth" });
+            })
+          );
+        }
+
+        // Display results
+        if (results.length === 0) {
+          liveResultsDiv.innerHTML =
+            '<div style="text-align: center; color: var(--muted); padding: 20px;">No suggestions found</div>';
+        } else {
+          results.forEach((result) => liveResultsDiv.appendChild(result));
+        }
+      }
+
+      // Add event listener for live search
+      liveSearchInput.addEventListener("input", updateLiveResults);
+
+      // Initialize with placeholder text
+      updateLiveResults();
 
       function dial() {
         const v = (
