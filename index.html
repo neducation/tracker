@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>📱 Universal Phone Hub - Kitchen Display</title>
+    <title>📱 Universal Device Hub</title>
     <style>
       :root {
         --bg: #000000;
@@ -70,17 +70,17 @@
       }
       .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 16px;
-        padding: 20px;
-        max-width: 1400px;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 12px;
+        padding: 16px;
+        max-width: 1600px;
         margin: 0 auto;
       }
 
       @media (max-width: 768px) {
         .grid {
           grid-template-columns: 1fr;
-          padding: 12px;
+          padding: 10px;
         }
         .opacity-control {
           flex-direction: column;
@@ -93,14 +93,20 @@
 
       @media (min-width: 1200px) {
         .grid {
-          grid-template-columns: repeat(4, 1fr);
+          grid-template-columns: repeat(5, 1fr);
+        }
+      }
+
+      @media (min-width: 1600px) {
+        .grid {
+          grid-template-columns: repeat(6, 1fr);
         }
       }
       .card {
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 14px;
+        border-radius: 12px;
+        padding: 12px;
         box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3) inset;
       }
       .card h2 {
@@ -113,21 +119,21 @@
       .btn {
         display: inline-block;
         width: 100%;
-        padding: 16px 18px;
-        margin: 8px 0;
+        padding: 10px 12px;
+        margin: 4px 0;
         text-decoration: none;
         text-align: center;
-        border-radius: 12px;
+        border-radius: 8px;
         border: 1px solid var(--border);
         background: var(--bg-card);
         color: var(--fg);
         cursor: pointer;
         transition: border-color 0.2s ease, background-color 0.2s ease;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 500;
         touch-action: manipulation;
         user-select: none;
-        min-height: 48px;
+        min-height: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -231,7 +237,7 @@
   </head>
   <body>
     <header>
-      <h1>📱 Universal Phone Hub - Kitchen Display</h1>
+      <h1>📱 Universal Device Hub</h1>
       <div class="opacity-control">
         <span>Button Opacity:</span>
         <input
@@ -479,53 +485,40 @@
         <button class="btn" onclick="downloadICS()">Add to Calendar</button>
       </div>
 
-      <!-- Admin (Kiosk) -->
+      <!-- System Tools -->
       <div class="card">
-        <h2>🔒 Admin Tools</h2>
+        <h2>⚙️ System Tools</h2>
+        <button class="btn accent" onclick="location.reload()">
+          🔄 Refresh Page
+        </button>
+        <button class="btn" onclick="clearAllData()">🗑️ Clear All Data</button>
+        <button class="btn" onclick="exportSettings()">
+          📤 Export Settings
+        </button>
+        <button class="btn" onclick="importSettings()">
+          📥 Import Settings
+        </button>
         <div class="row">
-          <input id="adminPass" type="password" placeholder="Admin password" />
-          <button class="btn" onclick="adminLogin()">🔓 Login</button>
+          <input id="navUrl" type="url" placeholder="https://example.com" />
+          <button class="btn" onclick="navigateTo()">🌐 Navigate</button>
         </div>
-        <div id="adminPanel" style="display: none">
-          <button class="btn accent" onclick="location.reload()">
-            🔄 Refresh Page
-          </button>
-          <button class="btn" onclick="clearAllData()">
-            🗑️ Clear All Data
-          </button>
-          <button class="btn" onclick="exportSettings()">
-            📤 Export Settings
-          </button>
-          <button class="btn" onclick="importSettings()">
-            📥 Import Settings
-          </button>
-          <button class="btn" onclick="kioskMode()">🖥️ Kiosk Mode</button>
-          <button class="btn" onclick="remoteControl()">
-            📡 Remote Control
-          </button>
-          <button class="btn" onclick="systemMonitor()">
-            📊 System Monitor
-          </button>
-          <div class="row">
-            <input id="navUrl" type="url" placeholder="https://example.com" />
-            <button class="btn" onclick="navigateTo()">🌐 Navigate</button>
-          </div>
-          <div class="row">
-            <input
-              id="autoRefresh"
-              type="number"
-              placeholder="Minutes"
-              min="1"
-              max="1440"
-            />
-            <button class="btn" onclick="setAutoRefresh()">
-              ⏱️ Auto Refresh
-            </button>
-          </div>
-          <button class="btn" onclick="emergencyReset()">
-            🚨 Emergency Reset
+        <div class="row">
+          <input
+            id="autoRefresh"
+            type="number"
+            placeholder="Minutes"
+            min="1"
+            max="1440"
+          />
+          <button class="btn" onclick="setAutoRefresh()">
+            ⏱️ Auto Refresh
           </button>
         </div>
+        <button class="btn" onclick="systemMonitor()">📊 System Monitor</button>
+        <button class="btn" onclick="goFullscreen()">🔳 Fullscreen</button>
+        <button class="btn" onclick="emergencyReset()">
+          🚨 Emergency Reset
+        </button>
         <div
           id="monitorDisplay"
           style="
@@ -537,7 +530,7 @@
             display: none;
           "
         ></div>
-        <small>Admin features require password: "admin123"</small>
+        <small>System tools for display management and monitoring</small>
       </div>
     </div>
 
@@ -1366,27 +1359,8 @@
         window.open("view-source:" + location.href, "_blank");
       }
 
-      // Enhanced Admin Functions
+      // System Tools Functions
       let autoRefreshInterval = null;
-
-      function adminLogin() {
-        const password = document.getElementById("adminPass").value;
-        if (password === "admin123") {
-          document.getElementById("adminPanel").style.display = "block";
-          document.getElementById("adminPass").value = "";
-          alert("Admin access granted!");
-          localStorage.setItem("adminLoggedIn", "true");
-        } else {
-          alert("Incorrect password");
-        }
-      }
-
-      // Check if admin is already logged in
-      if (localStorage.getItem("adminLoggedIn") === "true") {
-        document.addEventListener("DOMContentLoaded", () => {
-          document.getElementById("adminPanel").style.display = "block";
-        });
-      }
 
       function clearAllData() {
         if (
@@ -1448,59 +1422,6 @@
           }
         };
         input.click();
-      }
-
-      function kioskMode() {
-        if (
-          confirm(
-            "Enable kiosk mode? This will hide browser UI and prevent navigation."
-          )
-        ) {
-          // Request fullscreen
-          goFullscreen();
-
-          // Prevent right-click context menu
-          document.addEventListener("contextmenu", (e) => e.preventDefault());
-
-          // Prevent certain keyboard shortcuts
-          document.addEventListener("keydown", (e) => {
-            if (
-              e.ctrlKey ||
-              e.altKey ||
-              e.metaKey ||
-              e.key === "F11" ||
-              e.key === "F12"
-            ) {
-              e.preventDefault();
-            }
-          });
-
-          // Hide cursor after inactivity
-          let hideTimeout;
-          const hideCursor = () => {
-            document.body.style.cursor = "none";
-          };
-          const showCursor = () => {
-            document.body.style.cursor = "default";
-            clearTimeout(hideTimeout);
-            hideTimeout = setTimeout(hideCursor, 5000);
-          };
-
-          document.addEventListener("mousemove", showCursor);
-          hideTimeout = setTimeout(hideCursor, 5000);
-
-          alert("Kiosk mode enabled. Refresh page to disable.");
-        }
-      }
-
-      function remoteControl() {
-        alert(
-          "Remote Control Feature:\\n\\nTo control this display remotely:\\n1. Text commands to: " +
-            TARGET_PHONE +
-            "\\n2. Email commands to: " +
-            TARGET_EMAIL +
-            "\\n\\nSupported commands:\\n- REFRESH: Reload page\\n- OPACITY [10-100]: Set button opacity\\n- URL [address]: Navigate to URL\\n- CLEAR: Clear all data"
-        );
       }
 
       function systemMonitor() {
